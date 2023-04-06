@@ -18,15 +18,15 @@ function setup(){
     particle = new Particle();
 }
 
-function keyPressed(){
-    if(key == 'a'){
-        particle.rotate(-0.1);
-    } else if(key == 'd'){
-        particle.rotate(0.1);
-    }
-}
+
 
 function draw(){
+    if(keyIsDown(LEFT_ARROW)){
+        particle.rotate(0.05);
+    } else if(keyIsDown(RIGHT_ARROW)){
+        particle.rotate(-0.05);
+    }
+
     background(0);
     for(let wall of walls){
         wall.show();
