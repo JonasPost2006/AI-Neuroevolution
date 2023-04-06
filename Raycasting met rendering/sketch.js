@@ -2,18 +2,28 @@ let walls = [];
 let ray;
 let particle;
 
+const sceneW = 400;
+const sceneH = 400;
 const scene = [];
 
 function setup(){
-    createCanvas(400, 400);
+    createCanvas(800, 400);
     for(let i = 0; i < 5; i++){
-        let x1 = random(width);
-        let x2 = random(width);
-        let y1 = random(height);
-        let y2 = random(height);
+        let x1 = random(sceneW);
+        let x2 = random(sceneW);
+        let y1 = random(sceneH);
+        let y2 = random(sceneH);
         walls[i] = new Boundary(x1, y1, x2, y2);
     }
     particle = new Particle();
+}
+
+function keyPressed(){
+    if(key == 'a'){
+        particle.rotate(-0.1);
+    } else if(key == 'd'){
+        particle.rotate(0.1);
+    }
 }
 
 function draw(){
@@ -23,7 +33,20 @@ function draw(){
     }
     particle.update(mouseX, mouseY);
     particle.show();
-    scene = particle.look(walls);
+    
+    const scene = particle.look(walls);
+    const w = sceneW / scene.length;
+    push();
+    translate(sceneW, 0);
+    for(let i = 0; i < scene.length; i++){
+        noStroke();
+        const b = map(scene[i], 0, sceneW, 255, 0);
+        const h = map(scene[i], 0, sceneW, sceneH, 0);
+        fill(b);
+        rectMode(CENTER);
+        rect(i * w + w / 2, sceneH / 2, w, h);
+    }
+    pop();
 
     // ray.show();
     // ray.lookAt(mouseX, mouseY);
