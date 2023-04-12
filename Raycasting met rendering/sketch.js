@@ -5,7 +5,6 @@ let particle;
 const sceneW = 400;
 const sceneH = 400;
 const scene = [];
-let sliderFOV;
 
 function setup(){
     createCanvas(800, 400);
@@ -17,31 +16,22 @@ function setup(){
         walls[i] = new Boundary(x1, y1, x2, y2);
     }
     particle = new Particle();
-    sliderFOV = createSlider(0, 360, 45);
-    sliderFOV.input(changeFOV);
 }
 
-function changeFOV(){
-    const fov = sliderFOV.value();
-    particle.updateFOV(fov);
-}
+
 
 function draw(){
     if(keyIsDown(LEFT_ARROW)){
-        particle.rotate(-0.05);
-    } else if(keyIsDown(RIGHT_ARROW)){
         particle.rotate(0.05);
-    } else if(keyIsDown(UP_ARROW)){
-        particle.move(1);
-    } else if(keyIsDown(DOWN_ARROW)){
-        particle.move(-1);
+    } else if(keyIsDown(RIGHT_ARROW)){
+        particle.rotate(-0.05);
     }
 
     background(0);
     for(let wall of walls){
         wall.show();
     }
-    // particle.update(mouseX, mouseY);
+    particle.update(mouseX, mouseY);
     particle.show();
     
     const scene = particle.look(walls);
@@ -50,13 +40,11 @@ function draw(){
     translate(sceneW, 0);
     for(let i = 0; i < scene.length; i++){
         noStroke();
-        const sq = scene[i] * scene[i];
-        const wsq = sceneW * sceneW;
-        const b = map(sq, 0, wsq, 255, 0);
+        const b = map(scene[i], 0, sceneW, 255, 0);
         const h = map(scene[i], 0, sceneW, sceneH, 0);
         fill(b);
         rectMode(CENTER);
-        rect(i * w + w / 2, sceneH / 2, w + 1, h);
+        rect(i * w + w / 2, sceneH / 2, w, h);
     }
     pop();
 
