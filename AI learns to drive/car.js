@@ -14,15 +14,22 @@ class Car {
         // ctx.beginPath();
         // ctx.rect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height); //auto rechthoek
         // ctx.fill();
-        fill(255);
+        fill(0);
         rect(this.x, this.y, this.width, this.height);
         
     }
-
-    move(){
-        this.x += this.speedX;
-        this.y += this.speedY;
-    }
+    
+    move() {
+        if (keyIsDown(UP_ARROW)) {
+          this.y -= 1; // Move up by decreasing y position
+        } else if (keyIsDown(DOWN_ARROW)) {
+          this.y += 1; // Move down by increasing y position
+        } else if (keyIsDown(RIGHT_ARROW)) {
+          this.x += 1; // Move right by increasing x position
+        } else if (keyIsDown(LEFT_ARROW)) {
+          this.x -= 1; // Move left by decreasing x position
+        }
+      }
 
     setSpeed(speedX, speedY){
         this.speedX = speedX;
