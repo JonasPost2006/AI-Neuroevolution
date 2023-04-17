@@ -8,8 +8,9 @@ class Car {
         this.speedY = 0;
         this.speed = 0;
         this.acceleration = 0.1;
-        this.maxSpeed = 10;
+        this.maxSpeed = 5;
         this.friction = 0.05;
+        this.angle = 0;
 
     }
 
@@ -17,8 +18,12 @@ class Car {
         // ctx.beginPath();
         // ctx.rect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height); //auto rechthoek
         // ctx.fill();
-        fill(0);
-        rect(this.x, this.y, this.width, this.height);
+        fill(255, 0, 0);
+        push();
+        translate(this.x, this.y);
+        rotate(this.angle);
+        rect(0, 0, this.height, this.width);
+        pop();
         console.log(this.speed);
         
     }
@@ -67,12 +72,23 @@ class Car {
       if(Math.abs(this.speed) < this.friction){     //Hierdoor wordt speed 0 als geen toets ingedrukt is, anders is speed ~ friction
         this.speed = 0;
       }
-      this.y -= this.speed;
+      if(keyIsDown(LEFT_ARROW)){
+        this.setHeading(-0.1);
+      }
+      if(keyIsDown(RIGHT_ARROW)){
+        this.setHeading(0.1);
+      }
+      this.x += this.speed * cos(this.angle);
+      this.y += this.speed * sin(this.angle);
     }
 
     setSpeed(speedX, speedY){
-        this.speedX = speedX;
         this.speedY = speedY;
+    }
+
+    setHeading(angle){
+      let speed = this.speed / this.maxSpeed;
+      this.angle += angle * speed;
     }
 
 
