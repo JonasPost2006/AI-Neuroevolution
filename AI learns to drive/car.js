@@ -24,7 +24,6 @@ class Car {
         rotate(this.angle);
         rect(0, 0, this.height, this.width);
         pop();
-        console.log(this.speed);
         
     }
     
@@ -50,7 +49,11 @@ class Car {
     //     }
     //   }
 
-    move(){
+    update(){
+      this.#move();
+    }
+    
+    #move(){
       if(keyIsDown(UP_ARROW)){
         this.speed += this.acceleration;
       }

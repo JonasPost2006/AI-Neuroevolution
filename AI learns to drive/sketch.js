@@ -22,7 +22,7 @@ function setup(){
 
 function draw(){
     background(220)
-    car.move();
+    car.update();
     car.draw();
 }
 
