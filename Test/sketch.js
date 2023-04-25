@@ -1,6 +1,8 @@
+let walls = [];
+
 // Set up canvas
 function setup() {
-  createCanvas(600, 400);
+  createCanvas(1200, 800);
   car.position = createVector(width / 2, height / 2); // Set initial position of car to center of canvas
   car.velocity = createVector(0, 0); // Set initial velocity of car to 0
   car.acceleration = createVector(0, 0); // Set initial acceleration of car to 0
@@ -29,6 +31,9 @@ function drawCircuit() {
   beginShape();
   for (let i = 0; i < circuit.vertices.length; i++) {
     vertex(circuit.vertices[i].x, circuit.vertices[i].y);
+  }
+  for (let i = 0; i < circuit.vertices.length; i++) {
+    vertex(walls[i], walls[i]);
   }
   endShape(CLOSE);
 
@@ -81,7 +86,7 @@ function checkBoundary() {
 
 // Main draw function
 function draw() {
-  background(255);
+  background(220);
   drawCircuit();
   drawCar();
   updateCar();
@@ -109,4 +114,3 @@ function mouseClicked() {
     circuit.lines.push(newLine);
   }
 }
-
