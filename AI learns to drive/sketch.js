@@ -3,13 +3,13 @@ let carX = 100;
 let carY = 100;
 let car;
 
-const mousePosText = document.getElementById('mouse-pos');
-let mousePos = { x: undefined, y: undefined };
+// const mousePosText = document.getElementById('mouse-pos');
+// let mousePos = { x: undefined, y: undefined };
 
-window.addEventListener('mousemove', (event) => {
-  mousePos = { x: event.clientX, y: event.clientY - 200};
-  mousePosText.textContent = `(${mousePos.x}, ${mousePos.y})`;
-});
+// window.addEventListener('mousemove', (event) => {
+//   mousePos = { x: event.clientX, y: event.clientY - 200};
+//   mousePosText.textContent = `(${mousePos.x}, ${mousePos.y})`;
+// });
 
 // const canvas = document.getElementById("myCanvas");
 // canvas.height = 600;
