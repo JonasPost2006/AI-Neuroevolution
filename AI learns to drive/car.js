@@ -11,13 +11,11 @@ class Car {
         this.maxSpeed = 5;
         this.friction = 0.05;
         this.angle = 0;
+        // this.colour = (255, 0, 0);
 
     }
 
     draw(){
-        // ctx.beginPath();
-        // ctx.rect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height); //auto rechthoek
-        // ctx.fill();
         fill(255, 0, 0);
         push();
         translate(this.x, this.y);
@@ -26,28 +24,6 @@ class Car {
         pop();
         
     }
-    
-    // move() {
-    //     if (keyIsDown(UP_ARROW)) {
-    //       if(this.speedY <= this.maxSpeed){
-    //         this.y -= this.speedY;
-    //         this.speedY += this.acceleration;
-    //       }else if(this.speedY >= 3){
-    //         this.y -= this.speedY;
-    //       }
-    //     } else if (keyIsDown(DOWN_ARROW)) {
-    //       if(this.speedY <= this.maxSpeed / 2){
-    //         this.y += this.speedY;
-    //         this.speedY += this.acceleration;
-    //       }else if(this.speedY >= 3){
-    //         this.y += this.speedY;
-    //       }
-    //     } else if (keyIsDown(RIGHT_ARROW)) {
-    //       this.x += 1; // Move right by increasing x position
-    //     } else if (keyIsDown(LEFT_ARROW)) {
-    //       this.x -= 1; // Move left by decreasing x position
-    //     }
-    //   }
 
     update(){
       this.#move();

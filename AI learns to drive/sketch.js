@@ -3,14 +3,6 @@ let carX = 100;
 let carY = 100;
 let car;
 
-// const mousePosText = document.getElementById('mouse-pos');
-// let mousePos = { x: undefined, y: undefined };
-
-// window.addEventListener('mousemove', (event) => {
-//   mousePos = { x: event.clientX, y: event.clientY - 200};
-//   mousePosText.textContent = `(${mousePos.x}, ${mousePos.y})`;
-// });
-
 // const canvas = document.getElementById("myCanvas");
 // canvas.height = 600;
 // canvas.width = 1000;
@@ -21,6 +13,48 @@ let car;
 function setup(){
     createCanvas(1200, 800);
     car = new Car(carX, carY, 15, 30);
+    createWalls();
+}
+
+function draw(){
+    background(220)
+    for(let wall of walls){     //Laat de muren zien
+        wall.show();
+        if(collideLineRect(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.x, car.y, car.width, car.height)){
+            console.log("Collision detected!!!!!!")
+            // car.colour = (0, 0, 255);
+        }
+    }
+    car.update();
+    car.draw();
+}
+
+//Principe van Codebullets video, ik zou collide2d library kunnen gebruiken, maar ik vind het interessant om zelf te zien hoe het werkt
+function collideLineRect(x1, y1, x2, y2, carX, carY, carWidth, carHeight){
+    //Kijken of de lijnen van de auto een lijn raken
+    var left = collideLineLine(x1, y1, x2, y2, carX, carY, carX, carY + carHeight);
+    var right = collideLineLine(x1, y1, x2, y2, carX + carWidth, carY, carX + carWidth, carY + carHeight);
+    var top = collideLineLine(x1, y1, x2, y2, carX, carY, carX + carWidth, carY);
+    var bottom = collideLineLine(x1, y1, x2, y2, carX, carY + carHeight, carX + carWidth, carY + carHeight);
+
+    return left || right || top || bottom;
+}
+
+function collideLineLine(x1, y1, x2, y2, x3, y3, x4, y4) {
+    // Calculate the direction of the lines
+    var uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+    var uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+  
+    // If the direction of the lines is between 0 and 1, the lines intersect
+    if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+      return true;
+    } else {
+      return false;
+    }
+}
+
+
+function createWalls(){
     walls.push(new Boundary(623, 47, 323, 37));
     walls.push(new Boundary(323, 37, 173, 62));
     walls.push(new Boundary(173, 62, 65, 99));
@@ -73,29 +107,3 @@ function setup(){
     walls.push(new Boundary(844, 148, 850, 118));
     walls.push(new Boundary(850, 118, 623, 117));
 }
-
-function draw(){
-    background(220)
-    for(let wall of walls){     //Laat de muren zien
-        wall.show();
-    }
-    car.update();
-    car.draw();
-}
-
-
-// function keyIsPressed(){
-//     if(keyIsDown(UP_ARROW)){
-//         car.setSpeed(0, -1);
-//     }else if(keyIsDown(DOWN_ARROW)){
-//         car.setSpeed(0, 1);
-//     }else if(keyIsDown(RIGHT_ARROW)){
-//         car.setSpeed(-1, 0);
-//     }else if(keyIsDown(LEFT_ARROW)){
-//         car.setSpeed(1, 0);
-//     }
-// }
-
-// function keyReleased(){
-//     car.setSpeed(0, 0);
-// }
