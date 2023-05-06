@@ -14,57 +14,9 @@ window.addEventListener('mousemove', (event) => {
   mousePosText.textContent = `(${mousePos.x}, ${mousePos.y - 200})`;
 });
 
-// const canvas = document.getElementById("myCanvas");
-// canvas.height = 600;
-// canvas.width = 1000;
-// const ctx = canvas.getContext("2d");
-// car = new Car(carX, carY, 15, 30);
-// car.draw(ctx);
-
-// function detectCollision(car, walls){
-//     let collision = true;
-//     //laat de auto zien als vectoren
-//     const carVectors = [
-//         createVector(car.x, car.y),
-//         createVector(car.x + car.width, car.y),
-//         createVector(car.x + car.width, car.y + car.height),
-//         createVector(car.x, car.y + car.height)
-//     ];
-    
-
-//     for(const wall of walls){
-//         const wallVectors = [
-//             createVector(wall.a.x, wall.a.y),
-//             createVector(wall.b.x, wall.b.y)
-//         ];
-    
-
-//         for(let i = 0; i < 2; i++){
-//             const axis = wallVectors[(i + 1) % 2].sub(wallVectors[i]).rotate(HALF_PI);
-//             const carProjections = carVectors.map(v => v.dot(axis));
-//             const wallProjections = wallVectors.map(v => v.dot(axis));
-//             const minCar = Math.min(...carProjections);
-//             const maxCar = Math.max(...carProjections);
-//             const minWall = Math.min(...wallProjections);
-//             const maxWall = Math.max(...wallProjections);
-//             if(maxWall < minCar || maxCar < minWall){
-//                 collision = false;
-//                 break;
-//             }
-//         }
-
-//         if(collision){
-//            return true;
-//         }
-//     }
-//     //geen collision
-//     return false;
-
-// }
-
 function setup(){
     createCanvas(1200, 800);
-    car = new Car(carX, carY, 15, 30);
+    car = new Car(carX, carY, 30, 15);
     createWalls();
 }
 
@@ -72,64 +24,15 @@ function draw(){
     background(220)
     for(let wall of walls){     //Laat de muren zien
         wall.show();
-        let hit = collideLineRect(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.x, car.y, car.width, car.height);
-        if(hit){
-          console.log('Collision: ', hit);
-        }
-
-        // if(detectCollision(car, walls)){
-        //     console.log("COLLISION DETECTED");
-        // }
-        // if(collideLineRect(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.x, car.y, car.width, car.height)){
-        //     console.log("Collision detected!!!!!!", wall);
-        //     // car.colour = (0, 0, 255);
-        // }
-        // let x1 = wall.a.x;
-        // let y1 = wall.a.y;
-        // let x2 = wall.b.x;
-        // let y2 = wall.b.y;
-        // hit = collideLineRect(x1, y1, x2, y2, car.x, car.y, car.width, car.height)
-        // if(hit == true){
-        //     console.log("COLISION DETECTED!!!!");
+        // let hit = collideLineRect(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.x, car.y, car.width, car.height);
+        // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
+        // if(hit){
+        //   console.log('Collision: ', hit);
         // }
     }
-    
-    
     car.update();
     car.draw();
 }
-
-// function checkHit(){
-//   for(let wall in walls){
-//     hit = collideLineRect(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.x, car.y, car.width, car.height);
-//   }
-//   return hit;
-// }
-
-
-// //Principe van Codebullets video, ik zou collide2d library kunnen gebruiken, maar ik vind het interessant om zelf te zien hoe het werkt
-// function collideLineRect(x1, y1, x2, y2, carX, carY, carWidth, carHeight){
-//     //Kijken of de lijnen van de auto een lijn raken
-//     var left = collideLineLine(x1, y1, x2, y2, carX, carY, carX, carY + carHeight);
-//     var right = collideLineLine(x1, y1, x2, y2, carX + carWidth, carY, carX + carWidth, carY + carHeight);
-//     var top = collideLineLine(x1, y1, x2, y2, carX, carY, carX + carWidth, carY);
-//     var bottom = collideLineLine(x1, y1, x2, y2, carX, carY + carHeight, carX + carWidth, carY + carHeight);
-
-//     return left || right || top || bottom;
-// }
-
-// function collideLineLine(x1, y1, x2, y2, x3, y3, x4, y4) {
-//     // Calculate the direction of the lines
-//     var uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
-//     var uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
-  
-//     // If the direction of the lines is between 0 and 1, the lines intersect
-//     if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
-//       return true;
-//     } else {
-//       return false;
-//     }
-// }
 
 
 function createWalls(){

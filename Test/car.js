@@ -11,18 +11,26 @@ class Car {
         this.maxSpeed = 5;
         this.friction = 0.05;
         this.angle = 0;
-        // this.colour = (255, 0, 0);
-
-    }
+        this.diameter = Math.min(this.width, this.height);    
+      }
 
     draw(){
         fill(255, 0, 0);
         push();
         translate(this.x, this.y);
         rotate(this.angle);
-        rect(0, 0, this.height, this.width);
+        rect(0, 0, this.width, this.height);
+        fill(255);
+        let centerX = this.width / 2;
+        let centerY = this.height / 2;
+        circle(centerX, centerY, this.diameter);
+        for(let wall of walls){
+          let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, this.x + centerX, this.y + centerY, this.diameter);
+          if(hit){
+            console.log('Collision: ', hit);
+          }
+        }
         pop();
-        
     }
 
     update(){
@@ -62,14 +70,14 @@ class Car {
     }
 
     setSpeed(speedX, speedY){
-        this.speedY = speedY;
+      this.speedX = speedX    //speedX wordt nog niet gebruikt!!
+      this.speedY = speedY;
     }
 
     setHeading(angle){
       let speed = this.speed / this.maxSpeed;
       this.angle += angle * speed;
     }
-
 
 }
   
