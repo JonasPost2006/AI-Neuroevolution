@@ -5,7 +5,8 @@ class Boundary{
     }
 
     show(){
+        const canvasOffset = {x: 0, y: 0};
         stroke(0);
-        line(this.a.x, this.a.y, this.b.x, this.b.y);
+        line(this.a.x + canvasOffset.x, this.a.y + canvasOffset.y, this.b.x + canvasOffset.x, this.b.y + canvasOffset.y);
     }
 }

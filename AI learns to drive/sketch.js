@@ -1,6 +1,8 @@
 let walls = [];
 let carX = 100;
 let carY = 100;
+let width = 15;
+let height = 30;
 let car;
 
 
@@ -16,7 +18,7 @@ window.addEventListener('mousemove', (event) => {
 
 function setup(){
     createCanvas(1200, 800);
-    car = new Car(carX, carY, 30, 15);
+    car = new Car(carX, carY, width, height);
     createWalls();
 }
 
@@ -24,11 +26,11 @@ function draw(){
     background(220)
     for(let wall of walls){     //Laat de muren zien
         wall.show();
-        // let hit = collideLineRect(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.x, car.y, car.width, car.height);
+        let hit = collideLineRect(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.x, car.y, car.width, car.height);
         // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
-        // if(hit){
-        //   console.log('Collision: ', hit);
-        // }
+        if(hit){
+          console.log('Collision: ', hit);
+        }
     }
     car.update();
     car.draw();
@@ -94,4 +96,6 @@ function createWalls(){
     walls.push(new Boundary(781, 196, 844, 161));
     walls.push(new Boundary(844, 161, 845, 145));
     walls.push(new Boundary(845, 145, 623, 137));
+
+    //BLIJKBAAR ZIJN DE X EN Y ASSEN NIET GOED GEPLAATST OFZO WAARDOOR HET NIET KLOPT EN NIET ACCURAAT IS
 }

@@ -4,14 +4,18 @@ class Car {
       this.y = carY;
       this.width = width;
       this.height = height;
+
       this.speedX = 0;
       this.speedY = 0;
       this.speed = 0;
       this.acceleration = 0.1;
       this.maxSpeed = 5;
       this.friction = 0.05;
-      this.angle = 0;
+      this.angle = -  PI/2;
+
       this.diameter = Math.min(this.width, this.height);    
+
+      this.ray = new Ray(this);
     }
 
   draw(){
@@ -24,17 +28,19 @@ class Car {
       let centerX = this.width / 2;
       let centerY = this.height / 2;
       circle(centerX, centerY, this.diameter);
-      for(let wall of walls){
-        let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, this.x + centerX, this.y + centerY, this.diameter);
-        if(hit){
-          console.log('Collision: ', hit);
-        }
-      }
+      // for(let wall of walls){
+      //   let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, this.x + centerX, this.y + centerY, this.diameter);
+      //   if(hit){
+      //     console.log('Collision: ', hit);
+      //   }
+      // }
       pop();
+      this.ray.draw();
   }
 
   update(){
     this.#move();
+    this.ray.update();
   }
   
   #move(){
@@ -65,12 +71,12 @@ class Car {
     if(keyIsDown(RIGHT_ARROW)){
       this.setHeading(0.1);
     }
-    this.x += this.speed * cos(this.angle);
-    this.y += this.speed * sin(this.angle);
+    this.x += this.speed * cos(this.angle + HALF_PI);
+    this.y += this.speed * sin(this.angle + HALF_PI);
   }
 
   setSpeed(speedX, speedY){
-    this.speedX = speedX    //speedX wordt nog niet gebruikt!!
+    this.speedX = speedX;    //speedX wordt nog niet gebruikt!!
     this.speedY = speedY;
   }
 
