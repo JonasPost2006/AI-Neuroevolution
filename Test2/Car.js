@@ -99,11 +99,10 @@ class Car {
       let inputs = [];
   
       for (const record of rayLengths) {
-        inputs.push(record / width); // Map the distance between 0 and 1.
+        inputs.push(record / width); // Map  distance between 0 and 1.
       }
   
       let output = this.brain.predict(inputs);
-  
       const left = output[0] > 0.5;
       const right = output[1] > 0.5;
   

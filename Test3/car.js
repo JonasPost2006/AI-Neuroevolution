@@ -18,7 +18,7 @@ class Car {
       
 
       this.rays = [];
-      this.rayCount = this.rays.length;
+      
       this.hit = true;
 
       this.fov = 100;
@@ -26,15 +26,17 @@ class Car {
       for(let a = 0; a < 180; a += 10){
         this.rays.push(new Ray(this.position, radians(a - 90)));
       }
+      this.rayCount = this.rays.length;
 
-      this.brain = new NeuralNetwork(4, 3, 1); //inputs - hidden layer - output: voor, achter, links, rechts
+      this.brain = new NeuralNetwork(this.rayCount, ceil((this.rayCount + 2) / 2), 2); //inputs - hidden layer - output: voor, achter, links, rechts - misschien eerst 2 voor alleen links rechts, later snelheid bepalen
   }
 
   update(){
     this.#move();
-    this.getRayLenghths();
-    // const rayLengths = this.getRayLenghths(this, walls);
-    // this.think(rayLengths);
+    // this.getRayLenghths();
+    this.carUp();
+    const rayLengths = this.getRayLenghths(walls);
+    this.think(rayLengths);
     
   }
 
@@ -50,20 +52,13 @@ class Car {
     // car.think();
 
   }
-  // updateFOV(fov){
-  //   this.fov = fov;
-  //   this.rays = [];
-  //   for(let a = -this.fov / 2; a < this.fov / 2; a += 1){
-  //     this.rays.push(new Ray(this.position, radians(a) + this.heading));
-  //   }
-  // }
 
   turn(angle) {
     this.angle += angle;
   
     for (let i = 0; i < this.rays.length; i++) {
       const ray = this.rays[i];
-      const rayAngle = radians(i * 10 - 90) + this.angle;
+      const rayAngle = radians(i * 10 - 90) + this.angle + PI / 2;
       ray.setAngle(rayAngle);
     }
   }
@@ -81,19 +76,42 @@ class Car {
     // updateRayCount(rayCount){
     //   this.rayCount = this.rays.length;
     // }
+  think(rayLengths){
+    // let inputs = [1.0, 0.5, 0.2, 0.3];
+    let inputs = [];
+    for(const record of rayLengths){
+      inputs.push(record / this.width);
 
-  getRayLenghths(){
+    }
+    // console.log(inputs);
+
+    let output = this.brain.predict(inputs);
+    console.log(output);
+    const left = output[0] > 0.5;
+    const right = output[1] > 0.5;
+
+    if(left){
+      this.carLeft();
+      console.log("left");
+    }
+    if(right){              //> 0.5?
+      this.carRight();
+      console.log("right");
+    }
+  }
+
+  getRayLenghths(walls){
     let rayLengths = [];
-    for (const i in this.rays) {
+    for(const i in this.rays) {
       const ray = this.rays[i];
       let closest = null;
       let record = Infinity;
 
-      for (const wall of walls) {
+      for(const wall of walls) {
         const point = ray.cast(wall);
         if (point) {
           let distance = p5.Vector.dist(this.position, point);
-          const angle = ray.direction.heading() - this.heading;
+          const angle = ray.direction.heading() - this.direction.heading();       //const angle = ray.direction.heading() - this.heading;
           distance *= abs(cos(angle));
 
           if (distance < record) {
@@ -119,7 +137,13 @@ class Car {
   drawRays(closest){
     push();
     stroke(255, 100);
-    line(this.position.x, this.position.y, closest.x, closest.y);
+    if(closest){
+      line(this.position.x, this.position.y, closest.x, closest.y);
+    }
+    else{
+      console.log("ERROR")
+    }
+    // line(this.position.x, this.position.y, closest.x, closest.y);
     pop();
   }
 
@@ -127,25 +151,19 @@ class Car {
     push();
     fill(255);
     strokeWeight(0);
-    text(Math.trunc(record), (this.position.x + closest.x) / 2, (this.position.y + closest.y) / 2);
+    if(closest){
+      text(Math.trunc(record), (this.position.x + closest.x) / 2, (this.position.y + closest.y) / 2);
+    }
+    else{
+      console.log("ERROR LENGTHS")
+    }
+    // text(Math.trunc(record), (this.position.x + closest.x) / 2, (this.position.y + closest.y) / 2);
     pop();
   }
 
 
 
-  // think(){
-  //   let inputs = [];
-  //   for(const record of rayLengths){
-  //     inputs.push(record / width);
 
-  //   }
-
-  //   let outputs = this.brain.predict(inputs);
-  //   if(outputs > 0.5){
-  //     this.carUp();
-  //     console.log("HALLOOO");
-  //   }
-  // }
 
 
 
@@ -170,18 +188,18 @@ class Car {
   }
   
   #move(){
-    if(keyIsDown(UP_ARROW)){
-      this.carUp();
-    }
-    if(keyIsDown(DOWN_ARROW)){
-      this.carDown();
-    }
-    if(keyIsDown(LEFT_ARROW)){
-      this.carLeft();
-    }
-    if(keyIsDown(RIGHT_ARROW)){
-      this.carRight();
-    }
+    // if(keyIsDown(UP_ARROW)){
+    //   this.carUp();
+    // }
+    // if(keyIsDown(DOWN_ARROW)){
+    //   this.carDown();
+    // }
+    // if(keyIsDown(LEFT_ARROW)){
+    //   this.carLeft();
+    // }
+    // if(keyIsDown(RIGHT_ARROW)){
+    //   this.carRight();
+    // }
     if(this.speed > this.maxSpeed){
       this.speed = this.maxSpeed;
     }

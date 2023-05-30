@@ -6,19 +6,19 @@ let height = 30;
 let car;
 
 
-const mousePosText = document.getElementById('mouse-pos');
-let mousePos = { x: undefined, y: undefined };
+// const mousePosText = document.getElementById('mouse-pos');
+// let mousePos = { x: undefined, y: undefined };
 
-window.addEventListener('mousemove', (event) => {
-  mousePos = { x: event.clientX, y: event.clientY };
-  mousePosText.textContent = `(${mousePos.x}, ${mousePos.y - 200})`;
-});
+// window.addEventListener('mousemove', (event) => {
+//   mousePos = { x: event.clientX, y: event.clientY };
+//   mousePosText.textContent = `(${mousePos.x}, ${mousePos.y - 200})`;
+// });
 
-function setup(){
-    createCanvas(1200, 800);
-    car = new Car(carX, carY, width, height);
-    // createCircuit(circuit);
-}
+// function setup(){
+//     createCanvas(1200, 800);
+//     car = new Car(carX, carY, width, height);
+//     // createCircuit(circuit);
+// }
 
 function setup(){
   createCanvas(1200, 800);
@@ -59,7 +59,6 @@ function draw(){
 }
 
 function createWalls(){
-    walls.push(new Boundary(50, 50, 50, 700));
     walls.push(new Boundary(50, 50, 50, 700));
     walls.push(new Boundary(50, 700, 1100, 700));
     walls.push(new Boundary(1100, 700, 1100, 50));
