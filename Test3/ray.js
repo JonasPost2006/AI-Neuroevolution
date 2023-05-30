@@ -8,7 +8,7 @@ class Ray{
         this.direction = p5.Vector.fromAngle(angle);
     }
 
-    cast(car, wall){
+    cast(wall){
         const x1 = wall.a.x;
         const y1 = wall.a.y;
         const x2 = wall.b.x;
@@ -34,7 +34,10 @@ class Ray{
             point.x = x1 + t * (x2 - x1);
             point.y = y1 + t * (y2 - y1);
 
-            // car.seeAnyCheckpointWall = wall.checkpoint;
+            // // car.seeAnyCheckpointWall = wall.checkpoint;
+            // const distance = dist(this.pos.x, this.pos.y, point.x, point.y);
+            // console.log("Distance Wall ", distance);
+            // // return distance;
             return point;
         } else{
             return;
