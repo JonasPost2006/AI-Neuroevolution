@@ -161,17 +161,6 @@ class Car {
     pop();
   }
 
-
-
-
-
-
-
-
-
-
-
-
   carUp(){
     this.speed += this.acceleration;
   }

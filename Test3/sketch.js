@@ -1,9 +1,10 @@
+const TOTAL = 40;
 let walls = [];
 let carX = 100;
 let carY = 100;
 let width = 15;
 let height = 30;
-let car;
+let cars = [];
 
 
 // const mousePosText = document.getElementById('mouse-pos');
@@ -22,7 +23,9 @@ let car;
 
 function setup(){
   createCanvas(1200, 800);
-  car = new Car(carX, carY, width, height);
+  for(let i = 0; i < TOTAL; i++){
+    cars[i] = new Car(carX, carY, width, height);
+  }
   createWalls();
 }
 
@@ -30,11 +33,11 @@ function draw(){
   background(220)
   for(let wall of walls){     //Laat de muren zien
       wall.show();
-      let hit = collideLineRect(wall.a.x, wall.a.y + 30, wall.b.x, wall.b.y + 30, car.x, car.y, car.width, car.height);
-      // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
-      if(hit){
-        console.log('Collision: ', hit);
-      }
+      // let hit = collideLineRect(wall.a.x, wall.a.y + 30, wall.b.x, wall.b.y + 30, car.x, car.y, car.width, car.height);
+      // // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
+      // if(hit){
+      //   console.log('Collision: ', hit);
+      // }
   }
   // for(let i = 0; i < circuitInside.length - 1; i++){
   //   const p1 = circuitInside[i];
@@ -54,8 +57,11 @@ function draw(){
   // }
   // createCircuit(circuitInside);
   // createCircuit(circuitOutside);
-  car.update();
-  car.draw();
+  
+  for(let car of cars){
+    car.update();
+    car.draw();
+  }
 }
 
 function createWalls(){
