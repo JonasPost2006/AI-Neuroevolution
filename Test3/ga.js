@@ -7,7 +7,15 @@ function nextGeneration(){
 }
 
 function pickOne(){
-    let car = random(savedCars); //Pak een random car
+    var index = 0;  //algoritme van the coding train uit de tutorial
+    var r = random();
+    while(r > 0){
+        r = r - savedCars[index].fitness;
+        index++;
+    }
+    index--;
+
+    let car = savedCars[index]; //Pak de car
     let child = new Car(carX, carY, width, height, car.brain); //Maak een nieuwe car met hetzelfde brein
     child.mutate(); //muteer de car zodat hij nieuwe weights krijgt
     return child;
