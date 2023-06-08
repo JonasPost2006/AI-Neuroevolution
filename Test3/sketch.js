@@ -1,4 +1,4 @@
-const TOTAL = 50;
+const TOTAL = 40;
 let walls = [];
 let carX = 100;
 let carY = 100;
@@ -93,5 +93,4 @@ function createWalls(){
     walls.push(new Boundary(180, 570, 970, 570));
     walls.push(new Boundary(970, 570, 970, 180));
     walls.push(new Boundary(970, 180, 180, 180));
-    walls.push(new Boundary(180, 180, 50, 180));
 }
