@@ -180,7 +180,6 @@ class Car {
   // }
 
   mutate(){
-    console.log("LUKT HOOR");
     this.brain.mutate(mutationPer); //muteer 10% van weights
   }
 
