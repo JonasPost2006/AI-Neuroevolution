@@ -9,13 +9,13 @@ let savedCars = [];
 let cars = [];
 
 
-// const mousePosText = document.getElementById('mouse-pos');
-// let mousePos = { x: undefined, y: undefined };
+const mousePosText = document.getElementById('mouse-pos');
+let mousePos = { x: undefined, y: undefined };
 
-// window.addEventListener('mousemove', (event) => {
-//   mousePos = { x: event.clientX, y: event.clientY };
-//   mousePosText.textContent = `(${mousePos.x}, ${mousePos.y - 200})`;
-// });
+window.addEventListener('mousemove', (event) => {
+  mousePos = { x: event.clientX, y: event.clientY };
+  mousePosText.textContent = `(${mousePos.x}, ${mousePos.y - 200})`;
+});
 
 // function setup(){
 //     createCanvas(1200, 800);
@@ -48,7 +48,17 @@ function draw(){
           car.height);
         // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
         if(hit){
-          // console.log('Collision: ', hit);
+          if(!wall.checkpoint){
+            // console.log('Collision: ', hit);
+            savedCars.push(cars.splice(i, 1)[0]);
+          }else{
+            car.increaseScore;
+            car.updateCheckpointTime();
+            break;
+          }
+        }
+        const elapsedTime = car.getTimeSinceLastCheckpoint();
+        if(elapsedTime > 5000){
           savedCars.push(cars.splice(i, 1)[0]);
         }
       }
@@ -85,12 +95,22 @@ function draw(){
 }
 
 function createWalls(){
-    walls.push(new Boundary(50, 50, 50, 700));
-    walls.push(new Boundary(50, 700, 1100, 700));
-    walls.push(new Boundary(1100, 700, 1100, 50));
-    walls.push(new Boundary(1100, 50, 50, 50));
-    walls.push(new Boundary(180, 180, 180, 570)); //Einde buitenbaan
-    walls.push(new Boundary(180, 570, 970, 570));
-    walls.push(new Boundary(970, 570, 970, 180));
-    walls.push(new Boundary(970, 180, 180, 180));
+    walls.push(new Boundary(50, 50, 50, 700, false));
+    walls.push(new Boundary(50, 700, 1100, 700, false));
+    walls.push(new Boundary(1100, 700, 1100, 50, false));
+    walls.push(new Boundary(1100, 50, 50, 50, false));
+    walls.push(new Boundary(180, 180, 180, 570, false)); //Einde buitenbaan
+    walls.push(new Boundary(180, 570, 970, 570, false));
+    walls.push(new Boundary(970, 570, 970, 180, false));
+    walls.push(new Boundary(970, 180, 180, 180, false));
+    walls.push(new Boundary(50, 180, 180, 180, false));
+    
+    walls.push(new Boundary(180, 180, 180, 50, true)); //Checkpoints
+    walls.push(new Boundary(250, 180, 250, 50, true));
+    walls.push(new Boundary(880, 180, 880, 50, true));
+    walls.push(new Boundary(970, 270, 1100, 270, true));
+}
+
+function createCheckpoints(){
+  //misschien oplossing dat rays niet colliden met checkpoints
 }

@@ -25,6 +25,7 @@ class Car {
       }
       this.rayCount = this.rays.length;
 
+      this.lastCheckpointTime = millis();
       this.score = 0;
       this.fitness = 0;
       this.hit = false;
@@ -37,7 +38,7 @@ class Car {
   }
 
   update(){
-    this.score++; //Elke keer als update wordt aangeroepen, verhoogt de score. De score kan beter worden gemaakt door het gebruik van checkpoints. Dit omdat een auto ook oneindig rondjes kan rijden, wat niet goed is.
+    // this.score++; //Elke keer als update wordt aangeroepen, verhoogt de score. De score kan beter worden gemaakt door het gebruik van checkpoints. Dit omdat een auto ook oneindig rondjes kan rijden, wat niet goed is.
     this.#move();
     // this.carHit();
     // this.getRayLenghths();
@@ -50,6 +51,8 @@ class Car {
   draw(){
     fill(this.hit ? 255 : 255, 0, 0);
     push();
+    stroke(0);
+    strokeWeight(1);
     translate(this.position.x, this.position.y);
     rotate(this.angle);
     rectMode(CENTER);
@@ -241,6 +244,17 @@ class Car {
   }
   
   
+  increseScore(){
+    this.score++;
+  }
+
+  updateCheckpointTime(){
+    this.lastCheckpointTime = millis();
+  }
+
+  getTimeSinceLastCheckpoint(){
+    return millis() - this.lastCheckpointTime;
+  }
 
   show(){
     for(let ray of this.rays){
