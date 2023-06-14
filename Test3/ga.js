@@ -23,3 +23,4 @@ function calculateFitness(){ //hier wordt de fitness (gezondheid, hoe goed de au
         car.fitness = car.score / sum;
     }
 }
+//Dat ene algorithme met r

@@ -32,7 +32,7 @@ class Car {
       if(brain){
         this.brain = brain.copy();  //Als er al een brein is moet hij gekopiëerd worden
       } else{
-        this.brain = new NeuralNetwork(this.rayCount, ceil((this.rayCount + 2) / 2), 2); //inputs - hidden layer - output: voor, achter, links, rechts - misschien eerst 2 voor alleen links rechts, later snelheid bepalen
+        this.brain = new NeuralNetwork(this.rayCount + 2, ceil((this.rayCount + 2) / 2), 2); //inputs - hidden layer - output: voor, achter, links, rechts - misschien eerst 2 voor alleen links rechts, later snelheid bepalen
       }
       
   }
@@ -93,6 +93,8 @@ class Car {
       inputs.push(record / this.width);
 
     }
+    inputs.push(this.speed);
+    inputs.push(this.acceleration);
     // console.log(inputs);
 
     let output = this.brain.predict(inputs);
@@ -118,15 +120,17 @@ class Car {
       let record = Infinity;
 
       for(const wall of walls) {
-        const point = ray.cast(wall);
-        if (point) {
-          let distance = p5.Vector.dist(this.position, point);
-          const angle = ray.direction.heading() - this.direction.heading();       //const angle = ray.direction.heading() - this.heading;
-          distance *= abs(cos(angle));
+        if(!wall.checkpoint){  
+          const point = ray.cast(wall);
+          if (point) {
+            let distance = p5.Vector.dist(this.position, point);
+            const angle = ray.direction.heading() - this.direction.heading();       //const angle = ray.direction.heading() - this.heading;
+            distance *= abs(cos(angle));
 
-          if (distance < record) {
-            record = distance;
-            closest = point;
+            if (distance < record) {
+              record = distance;
+              closest = point;
+            }
           }
         }
       }
@@ -193,12 +197,12 @@ class Car {
     this.speed -= this.acceleration;
   }
   carLeft(){
-    this.setHeading(-0.1);
-    this.turn(-0.05);
+    this.setHeading(-0.15);
+    this.turn(-0.15);
   }
   carRight(){
-    this.setHeading(0.05);
-    this.turn(0.1);
+    this.setHeading(0.15);
+    this.turn(0.15);
   }
   
   #move(){
@@ -244,8 +248,9 @@ class Car {
   }
   
   
-  increseScore(){
-    this.score++;
+  increaseScore(){
+    this.score += 10;
+    // console.log(this.score);
   }
 
   updateCheckpointTime(){
