@@ -89,12 +89,12 @@ class Car {
   think(rayLengths){
     // let inputs = [1.0, 0.5, 0.2, 0.3];
     let inputs = [];
+    inputs [0] = this.speed; 
+    inputs [1] = this.acceleration;
     for(const record of rayLengths){
       inputs.push(record / this.width);
 
     }
-    inputs.push(this.speed);
-    inputs.push(this.acceleration);
     // console.log(inputs);
 
     let output = this.brain.predict(inputs);
