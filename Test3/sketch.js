@@ -4,8 +4,6 @@ let carX = 100;
 let carY = 100;
 let width = 15;
 let height = 30;
-let mutationPer = 0.1;
-let savedCars = [];
 let cars = [];
 
 
@@ -35,33 +33,12 @@ function draw(){
   background(220)
   for(let wall of walls){     //Laat de muren zien
       wall.show();
-      for(let i = cars.length -1; i >= 0; i--){
-        let car = cars[i];
-        let hit = collideLineRect(
-          wall.a.x, 
-          wall.a.y, 
-          wall.b.x, 
-          wall.b.y, 
-          car.position.x, 
-          car.position.y, 
-          car.width, 
-          car.height);
-        // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
-        if(hit){
-          // console.log('Collision: ', hit);
-          savedCars.push(cars.splice(i, 1)[0]);
-        }
+      let hit = collideLineRect(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.x, car.y, car.width, car.height);
+      // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
+      if(hit){
+        console.log('Collision: ', hit);
       }
-  }  
-  for(let car of cars){
-    car.update();
-    car.draw();
   }
-
-  if(cars.length === 0){
-    nextGeneration();
-  }
-
   // for(let i = 0; i < circuitInside.length - 1; i++){
   //   const p1 = circuitInside[i];
   //   const p2 = circuitInside[i + 1];
@@ -81,7 +58,10 @@ function draw(){
   // createCircuit(circuitInside);
   // createCircuit(circuitOutside);
   
-
+  for(let car of cars){
+    car.update();
+    car.draw();
+  }
 }
 
 function createWalls(){
