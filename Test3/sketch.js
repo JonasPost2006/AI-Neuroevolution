@@ -99,10 +99,13 @@ function createWalls(){
     walls.push(new Boundary(50, 700, 1100, 700, false));
     walls.push(new Boundary(1100, 700, 1100, 50, false));
     walls.push(new Boundary(1100, 50, 50, 50, false));
-    walls.push(new Boundary(180, 180, 180, 570, false)); //Einde buitenbaan
-    walls.push(new Boundary(180, 570, 970, 570, false));
-    walls.push(new Boundary(970, 570, 970, 180, false));
-    walls.push(new Boundary(970, 180, 180, 180, false));
+    walls.push(new Boundary(180, 180, 180, 550, false)); //Einde buitenbaan
+    walls.push(new Boundary(180, 550, 200, 570, false));
+    walls.push(new Boundary(200, 570, 950, 570, false));
+    walls.push(new Boundary(950, 570, 970, 550, false));
+    walls.push(new Boundary(970, 550, 970, 200, false));
+    walls.push(new Boundary(970, 200, 950, 180, false));
+    walls.push(new Boundary(950, 180, 180, 180, false));
     walls.push(new Boundary(50, 180, 180, 180, false));
     
     // walls.push(new Boundary(180, 180, 180, 50, true)); //Checkpoints
@@ -110,17 +113,18 @@ function createWalls(){
     walls.push(new Boundary(565, 180, 565, 50, true));
     walls.push(new Boundary(880, 180, 880, 50, true));
     walls.push(new Boundary(970, 200, 1100, 200, true));
-    walls.push(new Boundary(970, 270, 1100, 270, true));
-    walls.push(new Boundary(970, 450, 1100, 450, true));
+    walls.push(new Boundary(970, 360, 1100, 360, true));
+    // walls.push(new Boundary(970, 450, 1100, 450, true));
     walls.push(new Boundary(970, 530, 1100, 530, true));
+    walls.push(new Boundary(960, 560, 1040, 700, true));
     walls.push(new Boundary(950, 570, 950, 700, true));
     walls.push(new Boundary(880, 570, 880, 700, true));
     walls.push(new Boundary(565, 570, 565, 700, true));
     walls.push(new Boundary(250, 570, 250, 700, true));
     walls.push(new Boundary(200, 570, 200, 700, true));
     walls.push(new Boundary(50, 530, 180, 530, true));
-    walls.push(new Boundary(50, 450, 180, 450, true));
-    walls.push(new Boundary(50, 270, 180, 270, true));
+    walls.push(new Boundary(50, 360, 180, 360, true));
+    // walls.push(new Boundary(50, 270, 180, 270, true));
     walls.push(new Boundary(50, 200, 180, 200, true));
 }
 

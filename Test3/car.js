@@ -32,7 +32,7 @@ class Car {
       if(brain){
         this.brain = brain.copy();  //Als er al een brein is moet hij gekopiëerd worden
       } else{
-        this.brain = new NeuralNetwork(this.rayCount + 2, ceil((this.rayCount + 2) / 2), 2); //inputs - hidden layer - output: voor, achter, links, rechts - misschien eerst 2 voor alleen links rechts, later snelheid bepalen
+        this.brain = new NeuralNetwork(this.rayCount, ceil((this.rayCount + 2) / 2), 2); //inputs - hidden layer - output: voor, achter, links, rechts - misschien eerst 2 voor alleen links rechts, later snelheid bepalen
       }
       
   }
@@ -89,8 +89,8 @@ class Car {
   think(rayLengths){
     // let inputs = [1.0, 0.5, 0.2, 0.3];
     let inputs = [];
-    inputs [0] = this.speed; 
-    inputs [1] = this.acceleration;
+    // inputs [0] = this.speed; 
+    // inputs [1] = this.acceleration;
     for(const record of rayLengths){
       inputs.push(record / this.width);
 
