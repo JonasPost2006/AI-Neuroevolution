@@ -25,6 +25,7 @@ class Car {
       }
       this.rayCount = this.rays.length;
 
+      this.lastCheckpointTime = millis();
       this.score = 0;
       this.fitness = 0;
       this.hit = false;
@@ -37,7 +38,7 @@ class Car {
   }
 
   update(){
-    this.score++; //Elke keer als update wordt aangeroepen, verhoogt de score. De score kan beter worden gemaakt door het gebruik van checkpoints. Dit omdat een auto ook oneindig rondjes kan rijden, wat niet goed is.
+    // this.score++; //Elke keer als update wordt aangeroepen, verhoogt de score. De score kan beter worden gemaakt door het gebruik van checkpoints. Dit omdat een auto ook oneindig rondjes kan rijden, wat niet goed is.
     this.#move();
     // this.carHit();
     // this.getRayLenghths();
@@ -50,6 +51,8 @@ class Car {
   draw(){
     fill(this.hit ? 255 : 255, 0, 0);
     push();
+    stroke(0);
+    strokeWeight(1);
     translate(this.position.x, this.position.y);
     rotate(this.angle);
     rectMode(CENTER);
@@ -86,6 +89,8 @@ class Car {
   think(rayLengths){
     // let inputs = [1.0, 0.5, 0.2, 0.3];
     let inputs = [];
+    // inputs [0] = this.speed; 
+    // inputs [1] = this.acceleration;
     for(const record of rayLengths){
       inputs.push(record / this.width);
 
@@ -115,15 +120,17 @@ class Car {
       let record = Infinity;
 
       for(const wall of walls) {
-        const point = ray.cast(wall);
-        if (point) {
-          let distance = p5.Vector.dist(this.position, point);
-          const angle = ray.direction.heading() - this.direction.heading();       //const angle = ray.direction.heading() - this.heading;
-          distance *= abs(cos(angle));
+        if(!wall.checkpoint){  
+          const point = ray.cast(wall);
+          if (point) {
+            let distance = p5.Vector.dist(this.position, point);
+            const angle = ray.direction.heading() - this.direction.heading();       //const angle = ray.direction.heading() - this.heading;
+            distance *= abs(cos(angle));
 
-          if (distance < record) {
-            record = distance;
-            closest = point;
+            if (distance < record) {
+              record = distance;
+              closest = point;
+            }
           }
         }
       }
@@ -190,12 +197,12 @@ class Car {
     this.speed -= this.acceleration;
   }
   carLeft(){
-    this.setHeading(-0.1);
-    this.turn(-0.05);
+    this.setHeading(-0.15);
+    this.turn(-0.15);
   }
   carRight(){
-    this.setHeading(0.05);
-    this.turn(0.1);
+    this.setHeading(0.15);
+    this.turn(0.15);
   }
   
   #move(){
@@ -241,6 +248,18 @@ class Car {
   }
   
   
+  increaseScore(){
+    this.score += 10;
+    // console.log(this.score);
+  }
+
+  updateCheckpointTime(){
+    this.lastCheckpointTime = millis();
+  }
+
+  getTimeSinceLastCheckpoint(){
+    return millis() - this.lastCheckpointTime;
+  }
 
   show(){
     for(let ray of this.rays){
