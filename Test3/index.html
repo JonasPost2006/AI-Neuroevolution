@@ -7,16 +7,44 @@
 
     <!-- <link rel="stylesheet" href="style.css"> -->
     <meta charset="utf-8" />
+
+    <style>
+      #infoContainer {
+        display: flex;
+        align-items: center;
+        font-family: 'Arial', sans-serif;
+      }
+  
+      #infoContainer p {
+        margin-right: 20px;
+        font-size: 24px;
+      }
+    </style>
   </head>
   <body>
     <title>AI learns to drive Test 3</title>
-    <p>
-      Mouse pos: <b><span id="mouse-pos"></span></b>
-    </p>
+    <div id="infoContainer">
+      <p>
+        Mouse pos: <b><span id="mouse-pos"></span></b>
+      </p>
+      <p>
+        Timer: <b><span id="runningTime"></span></b>
+      </p>
+      <p>
+        Longest Time: <b><span id="longestTime"></span></b>
+      </p>    
+      <p>
+        Best Score: <b><span id="bestScore"></span></b>
+      </p>
+      <p>
+        Highscore: <b><span id="highScore"></span></b>
+      </p>
+    </div>
     <canvas id = "myCanvas"></canvas>
     <script src="ray.js"></script>
     <script src="boundary.js"></script>
     <script src="car.js"></script>
+    <script src="ga.js"></script>
     <script src="sketch.js"></script>
     <script src="circuit.js"></script>
     <script src="lib/matrix.js"></script>

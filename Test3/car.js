@@ -28,7 +28,6 @@ class Car {
       this.lastCheckpointTime = millis();
       this.score = 0;
       this.fitness = 0;
-      this.hit = false;
       if(brain){
         this.brain = brain.copy();  //Als er al een brein is moet hij gekopiëerd worden
       } else{
@@ -38,10 +37,7 @@ class Car {
   }
 
   update(){
-    // this.score++; //Elke keer als update wordt aangeroepen, verhoogt de score. De score kan beter worden gemaakt door het gebruik van checkpoints. Dit omdat een auto ook oneindig rondjes kan rijden, wat niet goed is.
     this.#move();
-    // this.carHit();
-    // this.getRayLenghths();
     this.carUp();
     const rayLengths = this.getRayLenghths(walls);
     this.think(rayLengths);
@@ -49,7 +45,7 @@ class Car {
   }
 
   draw(){
-    fill(this.hit ? 255 : 255, 0, 0);
+    fill(255, 0, 0);
     push();
     stroke(0);
     strokeWeight(1);
@@ -59,56 +55,32 @@ class Car {
     rect(0, 0, this.width, this.height);
     fill(255);
     pop();
-    // car.think();
-
   }
 
   turn(angle) {
     this.angle += angle;
-  
     for (let i = 0; i < this.rays.length; i++) {
       const ray = this.rays[i];
       const rayAngle = radians(i * 10 - 90) + this.angle + PI / 2;
       ray.setAngle(rayAngle);
     }
   }
-  
-  // rotate(angle){
-  //   this.heading += angle;
-  //   let index = 0;
-  //   for(index < 0; i < this.rayCount; i += 1){
-  //     this.rays[index].setAngle(radians(a) + this.heading);
-  //     index++;
-  //   }
-  // }
 
-
-    // updateRayCount(rayCount){
-    //   this.rayCount = this.rays.length;
-    // }
   think(rayLengths){
-    // let inputs = [1.0, 0.5, 0.2, 0.3];
     let inputs = [];
-    // inputs [0] = this.speed; 
-    // inputs [1] = this.acceleration;
     for(const record of rayLengths){
       inputs.push(record / this.width);
 
     }
-    // console.log(inputs);
-
     let output = this.brain.predict(inputs);
-    // console.log(output);
     const left = output[0];
     const right = output[1];
 
     if(left > 0.5){
       this.carLeft();
-      // console.log("left");
     }
     if(right > 0.5){             
       this.carRight();
-      // console.log("right");
     }
   }
 
@@ -124,7 +96,7 @@ class Car {
           const point = ray.cast(wall);
           if (point) {
             let distance = p5.Vector.dist(this.position, point);
-            const angle = ray.direction.heading() - this.direction.heading();       //const angle = ray.direction.heading() - this.heading;
+            const angle = ray.direction.heading() - this.direction.heading();
             distance *= abs(cos(angle));
 
             if (distance < record) {
@@ -134,16 +106,10 @@ class Car {
           }
         }
       }
-
-      // if(closest){
-      //   stroke(255, 100);
-      //   line(this.position.x, this.position.y, closest.x, closest.y);
-      // }
       rayLengths[i] = record;
       this.drawRays(closest);
       this.drawRayLengths(closest, record);
     }
-    // console.log("Intersecting points: ", closest);
     return rayLengths;
 
 }
@@ -154,10 +120,6 @@ class Car {
     if(closest){
       line(this.position.x, this.position.y, closest.x, closest.y);
     }
-    // else{
-    //   console.log("ERROR")
-    // }
-    // line(this.position.x, this.position.y, closest.x, closest.y);
     pop();
   }
 
@@ -168,23 +130,8 @@ class Car {
     if(closest){
       text(Math.trunc(record), (this.position.x + closest.x) / 2, (this.position.y + closest.y) / 2);
     }
-    // else{
-    //   console.log("ERROR LENGTHS")
-    // }
-    // text(Math.trunc(record), (this.position.x + closest.x) / 2, (this.position.y + closest.y) / 2);
     pop();
   }
-
-  // carHit(){
-  //   for(let wall of this.walls){
-  //     this.hit = collideLineRect(wall.a.x, wall.a.y + 30, wall.b.x, wall.b.y + 30, this.position.x, this.position.y, this.width, this.height);
-  //     // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
-  //     if(this.hit){
-  //       console.log('Collision: ', this.hit);
-  //     } 
-  //   }
-    
-  // }
 
   mutate(){
     this.brain.mutate(mutationPer); //muteer 10% van weights
@@ -206,18 +153,6 @@ class Car {
   }
   
   #move(){
-    // if(keyIsDown(UP_ARROW)){
-    //   this.carUp();
-    // }
-    // if(keyIsDown(DOWN_ARROW)){
-    //   this.carDown();
-    // }
-    // if(keyIsDown(LEFT_ARROW)){
-    //   this.carLeft();
-    // }
-    // if(keyIsDown(RIGHT_ARROW)){
-    //   this.carRight();
-    // }
     if(this.speed > this.maxSpeed){
       this.speed = this.maxSpeed;
     }

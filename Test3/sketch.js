@@ -1,10 +1,16 @@
-const TOTAL = 20;
+const TOTAL = 50;
 let walls = [];
 let carX = 100;
 let carY = 100;
 let width = 15;
 let height = 30;
+let mutationPer = 0.08;
+let savedCars = [];
 let cars = [];
+let bestScore = 0;
+let highScore = 0;
+let startTime = 0;
+let longestTime = 0;
 
 
 const mousePosText = document.getElementById('mouse-pos');
@@ -15,17 +21,12 @@ window.addEventListener('mousemove', (event) => {
   mousePosText.textContent = `(${mousePos.x}, ${mousePos.y - 200})`;
 });
 
-// function setup(){
-//     createCanvas(1200, 800);
-//     car = new Car(carX, carY, width, height);
-//     // createCircuit(circuit);
-// }
-
 function setup(){
   createCanvas(1200, 800);
   for(let i = 0; i < TOTAL; i++){
     cars[i] = new Car(carX, carY, width, height);
   }
+  startTime = millis();
   createWalls();
 }
 
@@ -60,30 +61,47 @@ function draw(){
           savedCars.push(cars.splice(i, 1)[0]);
         }
       }
-  }
-  // for(let i = 0; i < circuitInside.length - 1; i++){
-  //   const p1 = circuitInside[i];
-  //   const p2 = circuitInside[i + 1];
-  //   let hit = collideLineRect(p1.x, p1.y, p2.x, p2.y, car.x, car.y, car.width, car.height);
-  //   if(hit){
-  //     console.log('Collision: ', hit);
-  //   }
-  // }
-  // for(let i = 0; i < circuitOutside.length - 1; i++){
-  //   const p1 = circuitOutside[i];
-  //   const p2 = circuitOutside[i + 1];
-  //   let hit = collideLineRect(p1.x, p1.y, p2.x, p2.y, car.x, car.y, car.width, car.height);
-  //   if(hit){
-  //     console.log('Collision: ', hit);
-  //   }
-  // }
-  // createCircuit(circuitInside);
-  // createCircuit(circuitOutside);
-  
+  }  
   for(let car of cars){
     car.update();
     car.draw();
   }
+
+  //Timer
+  const currentTime = millis() - startTime;
+  const minutes = Math.floor(currentTime / 60000);
+  const seconds = Math.floor((currentTime % 60000) / 1000);
+  const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  document.getElementById('runningTime').textContent = timeString;
+
+  if(currentTime > longestTime){
+    longestTime = currentTime;
+  }
+
+  //Code for the score of the cars
+  for (let car of cars) {
+    if (car.score > bestScore) {
+      bestScore = car.score;
+    }
+  }
+  document.getElementById('bestScore').textContent = bestScore;
+
+  if(cars.length === 0){
+    //reset timer and score
+    bestScore = 0;
+    startTime = millis();
+    //display longestTime
+    const longestMinutes = Math.floor(longestTime / 60000);
+    const longestSeconds = Math.floor((longestTime % 60000) / 1000);
+    document.getElementById('longestTime').textContent = `${longestMinutes}:${longestSeconds.toString().padStart(2, '0')}`;
+
+    nextGeneration();
+  }
+
+  if (bestScore > highScore) {
+    highScore = bestScore;
+  }
+  document.getElementById('highScore').textContent = highScore;
 }
 
 function createWalls(){
@@ -111,15 +129,15 @@ function createWalls(){
     walls.push(new Boundary(960, 560, 1040, 700, true));
     walls.push(new Boundary(950, 570, 950, 700, true));
     walls.push(new Boundary(880, 570, 880, 700, true));
+    walls.push(new Boundary(722, 570, 722, 700, true));
     walls.push(new Boundary(565, 570, 565, 700, true));
+    walls.push(new Boundary(407, 570, 407, 700, true));
     walls.push(new Boundary(250, 570, 250, 700, true));
     walls.push(new Boundary(200, 570, 200, 700, true));
+    walls.push(new Boundary(189, 555, 50, 670, true));
     walls.push(new Boundary(50, 530, 180, 530, true));
     walls.push(new Boundary(50, 360, 180, 360, true));
     // walls.push(new Boundary(50, 270, 180, 270, true));
     walls.push(new Boundary(50, 200, 180, 200, true));
-}
-
-function createCheckpoints(){
-  //misschien oplossing dat rays niet colliden met checkpointsz
+    
 }

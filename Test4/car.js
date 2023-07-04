@@ -1,10 +1,11 @@
 class Car {
-  constructor(carX, carY, width, height){
+  constructor(carX, carY, width, height, brain){
       this.x = carX;
       this.y = carY;
       this.width = width;
       this.height = height;
       this.position = createVector(carX, carY);
+      this.walls = walls;
 
       this.speedX = 0;
       this.speedY = 0;
@@ -12,38 +13,48 @@ class Car {
       this.acceleration = 0.1;
       this.maxSpeed = 5;
       this.friction = 0.05;
-      this.angle = -  PI/2;
-      this.rotation = 0;
-      this.direction = p5.Vector.fromAngle(radians(this.rotation) - PI / 2);
-      
-      
+      this.angle = -PI/2;
+      this.direction = p5.Vector.fromAngle(radians(this.angle) - PI / 2); //Zorgt dat rays de goede kant gericht zijn
+
 
       this.rays = [];
-      this.rayCount = this.rays.length;
-      this.hit = true;
-
-      this.fov = 110;
+      this.fov = 100;
       this.heading = 0;
-      for(let a = this.fov / (this.rayCount + 1) - this.fov / 2; a < this.fov / 2; a += this.fov / (this.rayCount + 1)){
-        this.rays.push(new Ray(this.position, radians(a)));
+      for(let a = 0; a < 180; a += 10){
+        this.rays.push(new Ray(this.position, radians(a - 90)));
       }
+      this.rayCount = this.rays.length;
 
-      this.brain = new NeuralNetwork(4, 3, 1); //inputs - hidden layer - output: voor, achter, links, rechts
+      this.lastCheckpointTime = millis();
+      this.score = 0;
+      this.fitness = 0;
+      this.hit = false;
+      if(brain){
+        this.brain = brain.copy();  //Als er al een brein is moet hij gekopiëerd worden
+      } else{
+        this.brain = new NeuralNetwork(this.rayCount, ceil((this.rayCount + 2) / 2), 2); //inputs - hidden layer - output: voor, achter, links, rechts - misschien eerst 2 voor alleen links rechts, later snelheid bepalen
+      }
+      
   }
 
   update(){
+    // this.score++; //Elke keer als update wordt aangeroepen, verhoogt de score. De score kan beter worden gemaakt door het gebruik van checkpoints. Dit omdat een auto ook oneindig rondjes kan rijden, wat niet goed is.
     this.#move();
-    this.getRayLenghths();
-    // const rayLengths = this.getRayLenghths(this, walls);
-    // this.think(rayLengths);
+    // this.carHit();
+    // this.getRayLenghths();
+    this.carUp();
+    const rayLengths = this.getRayLenghths(walls);
+    this.think(rayLengths);
     
   }
 
   draw(){
-    fill(this.collided ? 255 : 255, 0, 0);
+    fill(this.hit ? 255 : 255, 0, 0);
     push();
+    stroke(0);
+    strokeWeight(1);
     translate(this.position.x, this.position.y);
-    rotate(this.direction.heading() + PI / 2);
+    rotate(this.angle);
     rectMode(CENTER);
     rect(0, 0, this.width, this.height);
     fill(255);
@@ -51,51 +62,74 @@ class Car {
     // car.think();
 
   }
-  updateFOV(fov){
-    this.fov = fov;
-    this.rays = [];
-    for(let a = this.fov / (this.rayCount + 1) - this.fov / 2; a < this.fov / 2; a += this.fov / (this.rayCount + 1)){
-      this.rays.push(new Ray(this.position, radians(a) + this.heading));
-    }
-  }
 
   turn(angle) {
     this.angle += angle;
-    this.direction = p5.Vector.fromAngle(this.angle - PI / 2);
-    let index = 0;
-    for (let a = this.fov / (this.rayCount + 1) - this.fov / 2; a < this.fov / 2; a += this.fov / (this.rayCount + 1)) {
-      this.rays[index].setAngle(radians(a) + this.angle);
-      index++;
+    for (let i = 0; i < this.rays.length; i++) {
+      const ray = this.rays[i];
+      const rayAngle = radians(i * 10 - 90) + this.angle + PI / 2;
+      ray.setAngle(rayAngle);
     }
   }
   
+  // rotate(angle){
+  //   this.heading += angle;
+  //   let index = 0;
+  //   for(index < 0; i < this.rayCount; i += 1){
+  //     this.rays[index].setAngle(radians(a) + this.heading);
+  //     index++;
+  //   }
+  // }
 
 
-  updateRayCount(rayCount){
-    this.rayCount = rayCount;
-    this.rays = [];
-    for(let a = -this.fov / 2; a < this.fov / 2; a += 1){
-      this.rays.push(new Ray(this.position, radians(a) + this.dir.heading()));
+    // updateRayCount(rayCount){
+    //   this.rayCount = this.rays.length;
+    // }
+  think(rayLengths){
+    // let inputs = [1.0, 0.5, 0.2, 0.3];
+    let inputs = [];
+    // inputs [0] = this.speed; 
+    // inputs [1] = this.acceleration;
+    for(const record of rayLengths){
+      inputs.push(record / this.width);
+
+    }
+    // console.log(inputs);
+
+    let output = this.brain.predict(inputs);
+    // console.log(output);
+    const left = output[0];
+    const right = output[1];
+
+    if(left > 0.5){
+      this.carLeft();
+      // console.log("left");
+    }
+    if(right > 0.5){             
+      this.carRight();
+      // console.log("right");
     }
   }
 
-  getRayLenghths(){
+  getRayLenghths(walls){
     let rayLengths = [];
-    for (const i in this.rays) {
+    for(const i in this.rays) {
       const ray = this.rays[i];
       let closest = null;
       let record = Infinity;
 
-      for (const wall of walls) {
-        const point = ray.cast(wall);
-        if (point) {
-          let distance = p5.Vector.dist(this.position, point);
-          const angle = ray.direction.heading() - this.heading;
-          distance *= abs(cos(angle));
+      for(const wall of walls) {
+        if(!wall.checkpoint){  
+          const point = ray.cast(wall);
+          if (point) {
+            let distance = p5.Vector.dist(this.position, point);
+            const angle = ray.direction.heading() - this.direction.heading();
+            distance *= abs(cos(angle));
 
-          if (distance < record) {
-            record = distance;
-            closest = point;
+            if (distance < record) {
+              record = distance;
+              closest = point;
+            }
           }
         }
       }
@@ -116,7 +150,13 @@ class Car {
   drawRays(closest){
     push();
     stroke(255, 100);
-    line(this.position.x, this.position.y, closest.x, closest.y);
+    if(closest){
+      line(this.position.x, this.position.y, closest.x, closest.y);
+    }
+    // else{
+    //   console.log("ERROR")
+    // }
+    // line(this.position.x, this.position.y, closest.x, closest.y);
     pop();
   }
 
@@ -124,32 +164,30 @@ class Car {
     push();
     fill(255);
     strokeWeight(0);
-    text(Math.trunc(record), (this.position.x + closest.x) / 2, (this.position.y + closest.y) / 2);
+    if(closest){
+      text(Math.trunc(record), (this.position.x + closest.x) / 2, (this.position.y + closest.y) / 2);
+    }
+    // else{
+    //   console.log("ERROR LENGTHS")
+    // }
+    // text(Math.trunc(record), (this.position.x + closest.x) / 2, (this.position.y + closest.y) / 2);
     pop();
   }
 
-
-
-  // think(){
-  //   let inputs = [];
-  //   for(const record of rayLengths){
-  //     inputs.push(record / width);
-
+  // carHit(){
+  //   for(let wall of this.walls){
+  //     this.hit = collideLineRect(wall.a.x, wall.a.y + 30, wall.b.x, wall.b.y + 30, this.position.x, this.position.y, this.width, this.height);
+  //     // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
+  //     if(this.hit){
+  //       console.log('Collision: ', this.hit);
+  //     } 
   //   }
-
-  //   let outputs = this.brain.predict(inputs);
-  //   if(outputs > 0.5){
-  //     this.carUp();
-  //     console.log("HALLOOO");
-  //   }
+    
   // }
 
-
-
-
-
-
-
+  mutate(){
+    this.brain.mutate(mutationPer); //muteer 10% van weights
+  }
 
   carUp(){
     this.speed += this.acceleration;
@@ -158,18 +196,27 @@ class Car {
     this.speed -= this.acceleration;
   }
   carLeft(){
-    this.turn(0.1);
+    this.setHeading(-0.15);
+    this.turn(-0.15);
   }
   carRight(){
-    this.turn(-0.1);
+    this.setHeading(0.15);
+    this.turn(0.15);
   }
+  
   #move(){
-    if(keyIsDown(UP_ARROW)){
-      this.speed += this.acceleration;
-    }
-    if(keyIsDown(DOWN_ARROW)){
-      this.speed -= this.acceleration;
-    }
+    // if(keyIsDown(UP_ARROW)){
+    //   this.carUp();
+    // }
+    // if(keyIsDown(DOWN_ARROW)){
+    //   this.carDown();
+    // }
+    // if(keyIsDown(LEFT_ARROW)){
+    //   this.carLeft();
+    // }
+    // if(keyIsDown(RIGHT_ARROW)){
+    //   this.carRight();
+    // }
     if(this.speed > this.maxSpeed){
       this.speed = this.maxSpeed;
     }
@@ -185,18 +232,12 @@ class Car {
     if(Math.abs(this.speed) < this.friction){     //Hierdoor wordt speed 0 als geen toets ingedrukt is, anders is speed ~ friction
       this.speed = 0;
     }
-    if(keyIsDown(LEFT_ARROW)){
-      this.setHeading(-0.1);
-    }
-    if(keyIsDown(RIGHT_ARROW)){
-      this.setHeading(0.1);
-    }
-    this.x += this.speed * cos(this.angle);
-    this.y += this.speed * sin(this.angle);
+    this.position.x += this.speed * cos(this.angle + HALF_PI);
+    this.position.y += this.speed * sin(this.angle + HALF_PI);
   }
 
   setSpeed(speedX, speedY){
-    this.speedX = speedX    //speedX wordt nog niet gebruikt!!
+    this.speedX = speedX;    //speedX wordt nog niet gebruikt!!
     this.speedY = speedY;
   }
 
@@ -204,9 +245,20 @@ class Car {
     let speed = this.speed / this.maxSpeed;
     this.angle += angle * speed;
   }
+  
+  
+  increaseScore(){
+    this.score += 10;
+    // console.log(this.score);
+  }
 
-  
-  
+  updateCheckpointTime(){
+    this.lastCheckpointTime = millis();
+  }
+
+  getTimeSinceLastCheckpoint(){
+    return millis() - this.lastCheckpointTime;
+  }
 
   show(){
     for(let ray of this.rays){
