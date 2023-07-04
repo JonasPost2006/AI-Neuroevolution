@@ -2,7 +2,7 @@
 <html>
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.4/dist/tf.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.4/dist/tf.min.js"></script> -->
     <script src="https://unpkg.com/p5.collide2d"></script>
 
     <!-- <link rel="stylesheet" href="style.css"> -->
@@ -17,7 +17,7 @@
   
       #infoContainer p {
         margin-right: 20px;
-        font-size: 24px;
+        font-size: 26px;
       }
     </style>
   </head>
@@ -25,19 +25,22 @@
     <title>AI learns to drive Test 3</title>
     <div id="infoContainer">
       <p>
-        Mouse pos: <b><span id="mouse-pos"></span></b>
+        Mouse pos: <b><span id="mouse-pos" style="font-size: 24px;"></span></b>
       </p>
       <p>
-        Timer: <b><span id="runningTime"></span></b>
+        Timer: <b><span id="runningTime" style="font-size: 24px;"></span></b>
       </p>
       <p>
-        Longest Time: <b><span id="longestTime"></span></b>
+        Longest Time: <b><span id="longestTime" style="font-size: 24px;">0:00</span></b>
       </p>    
       <p>
-        Best Score: <b><span id="bestScore"></span></b>
+        Best Score: <b><span id="bestScore" style="font-size: 24px;"></span></b>
       </p>
       <p>
-        Highscore: <b><span id="highScore"></span></b>
+        Highscore: <b><span id="highScore" style="font-size: 24px;">0</span></b>
+      </p>
+      <p>
+        Generation: <b><span id="generation" style="font-size: 24px;">1</span></b>
       </p>
     </div>
     <canvas id = "myCanvas"></canvas>
@@ -46,7 +49,6 @@
     <script src="car.js"></script>
     <script src="ga.js"></script>
     <script src="sketch.js"></script>
-    <script src="circuit.js"></script>
     <script src="lib/matrix.js"></script>
     <script src="lib/nn.js"></script>
   </body>

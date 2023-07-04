@@ -11,6 +11,7 @@ let bestScore = 0;
 let highScore = 0;
 let startTime = 0;
 let longestTime = 0;
+let generation = 1;
 
 
 const mousePosText = document.getElementById('mouse-pos');
@@ -26,7 +27,7 @@ function setup(){
   for(let i = 0; i < TOTAL; i++){
     cars[i] = new Car(carX, carY, width, height);
   }
-  startTime = millis();
+  startTime = millis(); //Start de timer
   createWalls();
 }
 
@@ -36,7 +37,7 @@ function draw(){
       wall.show();
       for(let i = cars.length -1; i >= 0; i--){
         let car = cars[i];
-        let hit = collideLineRect(
+        let hit = collideLineRect(  //Geeft true als de muur hit met de auto op positie x, y en width height
           wall.a.x, 
           wall.a.y, 
           wall.b.x, 
@@ -45,19 +46,17 @@ function draw(){
           car.position.y, 
           car.width, 
           car.height);
-        // let hit = collideLineCircle(wall.a.x, wall.a.y, wall.b.x, wall.b.y, car.centerX, car.centerY, car.diameter);
         if(hit){
           if(!wall.checkpoint){
             // console.log('Collision: ', hit);
-            savedCars.push(cars.splice(i, 1)[0]);
+            savedCars.push(cars.splice(i, 1)[0]); //Als auto een muur heeft geraakt die geen checkpoint is, moet hij uit de lijst van cars en in de lijst savedCars
           }if(wall.checkpoint){
-            car.increaseScore();
+            car.increaseScore();          //Als checkpoint moet de score omhoog en checkpointtimer gereset zodat hij niet zomaar dood gaat
             car.updateCheckpointTime();
-            // break;
           }
         }
         const elapsedTime = car.getTimeSinceLastCheckpoint();
-        if(elapsedTime > 8000){
+        if(elapsedTime > 8000){ //Als tijd sinds de laatste checkpoint > 8sec. is, rijdt de auto waarschijnlijk rondjes. Om dit te voorkomen en naar de volgende gen. te gaan moet hij dood.
           savedCars.push(cars.splice(i, 1)[0]);
         }
       }
@@ -69,7 +68,7 @@ function draw(){
 
   //Timer
   const currentTime = millis() - startTime;
-  const minutes = Math.floor(currentTime / 60000);
+  const minutes = Math.floor(currentTime / 60000); //60000 ms in 1 min. Floor rondt af naar dichtsbijzijnde gehele getal
   const seconds = Math.floor((currentTime % 60000) / 1000);
   const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
   document.getElementById('runningTime').textContent = timeString;
@@ -77,27 +76,22 @@ function draw(){
   if(currentTime > longestTime){
     longestTime = currentTime;
   }
-
-  //Code for the score of the cars
-  for (let car of cars) {
-    if (car.score > bestScore) {
-      bestScore = car.score;
-    }
-  }
   document.getElementById('bestScore').textContent = bestScore;
-
   if(cars.length === 0){
-    //reset timer and score
-    bestScore = 0;
+    bestScore = 0;        //reset timer and score
     startTime = millis();
-    //display longestTime
-    const longestMinutes = Math.floor(longestTime / 60000);
+    const longestMinutes = Math.floor(longestTime / 60000); //display longestTime
     const longestSeconds = Math.floor((longestTime % 60000) / 1000);
     document.getElementById('longestTime').textContent = `${longestMinutes}:${longestSeconds.toString().padStart(2, '0')}`;
 
     nextGeneration();
   }
 
+  for (let car of cars) {
+    if (car.score > bestScore) {
+      bestScore = car.score;
+    }
+  }
   if (bestScore > highScore) {
     highScore = bestScore;
   }

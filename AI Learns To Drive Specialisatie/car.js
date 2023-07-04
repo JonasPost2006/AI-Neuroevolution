@@ -31,7 +31,7 @@ class Car {
       if(brain){
         this.brain = brain.copy();  //Als er al een brein is moet hij gekopiëerd worden
       } else{
-        this.brain = new NeuralNetwork(this.rayCount, ceil((this.rayCount + 2) / 2), 2); //inputs - hidden layer - output: voor, achter, links, rechts - misschien eerst 2 voor alleen links rechts, later snelheid bepalen
+        this.brain = new NeuralNetwork(this.rayCount, ceil((this.rayCount + 2) / 2), 2); //inputs - hidden layer - output: links, rechts
       }
       
   }
@@ -41,10 +41,9 @@ class Car {
     this.carUp();
     const rayLengths = this.getRayLenghths(walls);
     this.think(rayLengths);
-    
   }
 
-  draw(){
+  draw(){ //Voor het laten zien van de auto
     fill(255, 0, 0);
     push();
     stroke(0);
@@ -57,7 +56,7 @@ class Car {
     pop();
   }
 
-  turn(angle) {
+  turn(angle){ //Veranderd de angle van de rays
     this.angle += angle;
     for (let i = 0; i < this.rays.length; i++) {
       const ray = this.rays[i];
@@ -68,15 +67,15 @@ class Car {
 
   think(rayLengths){
     let inputs = [];
-    for(const record of rayLengths){
+    for(const record of rayLengths){ //De inputs zijn de rays
       inputs.push(record / this.width);
 
     }
-    let output = this.brain.predict(inputs);
+    let output = this.brain.predict(inputs); //Waarde van outputs bepalen of er gestuurd wordt
     const left = output[0];
     const right = output[1];
 
-    if(left > 0.5){
+    if(left > 0.5){     //Door dit hoger te maken, bijvoorbeeld 0.8, moet de output zekerder zijn om te sturen. Dit voorkomt het 'trillen' van de auto, maar zorgt dat er minder snel wordt getrained / gestuurd.
       this.carLeft();
     }
     if(right > 0.5){             
@@ -88,12 +87,12 @@ class Car {
     let rayLengths = [];
     for(const i in this.rays) {
       const ray = this.rays[i];
-      let closest = null;
-      let record = Infinity;
+      let closest = null;       //Dichtbijzijnste punt tot de muur
+      let record = Infinity;    //Kleinste afstand tot de muur, is infinity want alles is kleiner dan infinity
 
       for(const wall of walls) {
-        if(!wall.checkpoint){  
-          const point = ray.cast(wall);
+        if(!wall.checkpoint){           //Zorgt ervoor dat de checkpoints niet interferen met de afstond tot de muren
+          const point = ray.cast(wall); //Geeft het snijpunt terug
           if (point) {
             let distance = p5.Vector.dist(this.position, point);
             const angle = ray.direction.heading() - this.direction.heading();
@@ -111,8 +110,7 @@ class Car {
       this.drawRayLengths(closest, record);
     }
     return rayLengths;
-
-}
+  }
 
   drawRays(closest){
     push();
@@ -172,20 +170,13 @@ class Car {
     this.position.y += this.speed * sin(this.angle + HALF_PI);
   }
 
-  setSpeed(speedX, speedY){
-    this.speedX = speedX;    //speedX wordt nog niet gebruikt!!
-    this.speedY = speedY;
-  }
-
   setHeading(angle){
     let speed = this.speed / this.maxSpeed;
     this.angle += angle * speed;
   }
   
-  
   increaseScore(){
     this.score += 10;
-    // console.log(this.score);
   }
 
   updateCheckpointTime(){

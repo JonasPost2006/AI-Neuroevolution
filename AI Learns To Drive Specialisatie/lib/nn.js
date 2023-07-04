@@ -51,7 +51,6 @@ class NeuralNetwork {
       this.bias_o.randomize();
     }
 
-    // TODO: copy these as well
     this.setLearningRate();
     this.setActivationFunction();
 
